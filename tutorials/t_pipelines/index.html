@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pipelines (Tensor) &mdash; Open3D latest (dd646a2) documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/open3d_logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ICP registration" href="t_icp_registration.html" />
+    <link rel="prev" title="Color Map Optimization" href="../pipelines/color_map_optimization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Open3D
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest (dd646a2)
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Build from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cpp_project.html">Link Open3D in C++ projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builddocs.html">Build documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../open3d_ml.html">Open3D-ML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../arm.html">ARM support</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../geometry/index.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pipelines/index.html">Pipelines</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pipelines (Tensor)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html">ICP registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Point-To-Point-ICP-Registration">Point-To-Point ICP Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Point-to-Plane-ICP-Registration">Point-to-Plane ICP Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Colored-ICP-Registration">Colored ICP Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_robust_kernel.html">Robust Kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/index.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reconstruction_system/index.html">Reconstruction system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../t_reconstruction_system/index.html">Reconstruction system (Tensor)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sensor/index.html">Sensor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contribute</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/contribute.html">Contributing to Open3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/contribution_recipes.html">Contribution methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/styleguide.html">Open3D style guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">C++ API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cpp_api.html">C++ documentation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Python API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.camera.html">open3d.camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.core.html">open3d.core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.geometry.html">open3d.geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.io.html">open3d.io</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.t.html">open3d.t</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.ml.html">open3d.ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.pipelines.html">open3d.pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.utility.html">open3d.utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.visualization.html">open3d.visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.visualization.tensorboard_plugin.summary.html">open3d.visualization.tensorboard_plugin.summary</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Open3D</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Pipelines (Tensor)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="pipelines-tensor">
+<span id="t-pipelines"></span><h1>Pipelines (Tensor)<a class="headerlink" href="#pipelines-tensor" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="t_icp_registration.html">ICP registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Helper-visualization-function">Helper visualization function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Understanding-ICP-Algorithm">Understanding ICP Algorithm</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="t_icp_registration.html#Different-variants-of-ICP">Different variants of ICP</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#Point-to-point-ICP">Point-to-point ICP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#Point-to-plane-ICP">Point-to-plane ICP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#Colored-ICP">Colored ICP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Understanding-ICP-API">Understanding ICP API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="t_icp_registration.html#Input">Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="t_icp_registration.html#Parameters">Parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#Max-correspondence-Distances">Max correspondence Distances</a></li>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#Initial-Transform-from-Source-to-Target-[open3d.core.Tensor]">Initial Transform from Source to Target [open3d.core.Tensor]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#Estimation-Method">Estimation Method</a></li>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#ICP-Convergence-Criteria-[relative-rmse,-relative-fitness,-max-iterations]">ICP Convergence Criteria [relative rmse, relative fitness, max iterations]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#Voxel-Sizes">Voxel Sizes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="t_icp_registration.html#Save-Loss-Log">Save Loss Log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Vanilla-ICP-Example">Vanilla ICP Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Multi-Scale-ICP-Example">Multi-Scale ICP Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="t_icp_registration.html#Plotting-Convergence-Graph">Plotting Convergence Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="t_icp_registration.html#Multi-Scale-ICP-on-CUDA-device-Example">Multi-Scale ICP on CUDA device Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Case-of-no-correspondences.">Case of <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">correspondences</span></code>.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Information-Matrix">Information Matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Initial-Allignment">Initial Allignment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="t_icp_registration.html#Point-To-Point-ICP-Registration">Point-To-Point ICP Registration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="t_icp_registration.html#Point-to-Plane-ICP-Registration">Point-to-Plane ICP Registration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="t_icp_registration.html#Colored-ICP-Registration">Colored ICP Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Setting-baseline-with-point-to-plane-registration">Setting baseline with point-to-plane registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="t_icp_registration.html#Colored-Registration">Colored Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="t_robust_kernel.html">Robust Kernel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="t_robust_kernel.html#Point-to-plane-ICP-using-Robust-Kernels">Point-to-plane ICP using Robust Kernels</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="t_robust_kernel.html#Outlier-Rejection-with-Robust-Kernels">Outlier Rejection with Robust Kernels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="t_robust_kernel.html#How-to-use-Robust-Kernels-in-Open3D">How to use Robust Kernels in Open3D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="t_robust_kernel.html#Vanilla-ICP-vs-Robust-ICP">Vanilla ICP vs Robust ICP</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="t_robust_kernel.html#Vanilla-ICP">Vanilla ICP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="t_robust_kernel.html#Tuning-Vanilla-ICP">Tuning Vanilla ICP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="t_robust_kernel.html#Robust-ICP">Robust ICP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="t_icp_registration.html" class="btn btn-neutral float-right" title="ICP registration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../pipelines/color_map_optimization.html" class="btn btn-neutral float-left" title="Color Map Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018 - 2021, www.open3d.org
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+<span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Docs version</span>
+    latest (dd646a2)
+    <span class="fa fa-caret-down"></span>
+</span>
+
+<!-- A hack to include an external page to get around CORS policy -->
+<!-- https://stackoverflow.com/a/15250208/1255535 -->
+<div class="rst-other-versions">
+    <dl>
+    <dt>Versions</dt>
+        <dd><ul>
+            <script src="http://www.open3d.org/docs/versions.js"></script>
+        </ul></dd>
+    </dl>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

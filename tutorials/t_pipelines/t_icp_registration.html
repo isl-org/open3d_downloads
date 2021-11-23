@@ -1,0 +1,1933 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ICP registration &mdash; Open3D latest (dd646a2) documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/open3d_logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Robust Kernel" href="t_robust_kernel.html" />
+    <link rel="prev" title="Pipelines (Tensor)" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Open3D
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest (dd646a2)
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Build from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cpp_project.html">Link Open3D in C++ projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builddocs.html">Build documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../open3d_ml.html">Open3D-ML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../arm.html">ARM support</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../geometry/index.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pipelines/index.html">Pipelines</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Pipelines (Tensor)</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ICP registration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Helper-visualization-function">Helper visualization function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Understanding-ICP-Algorithm">Understanding ICP Algorithm</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Different-variants-of-ICP">Different variants of ICP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Understanding-ICP-API">Understanding ICP API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Input">Input</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Parameters">Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Vanilla-ICP-Example">Vanilla ICP Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Multi-Scale-ICP-Example">Multi-Scale ICP Example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Plotting-Convergence-Graph">Plotting Convergence Graph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Multi-Scale-ICP-on-CUDA-device-Example">Multi-Scale ICP on CUDA device Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Case-of-no-correspondences.">Case of <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">correspondences</span></code>.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Information-Matrix">Information Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Initial-Allignment">Initial Allignment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Point-To-Point-ICP-Registration">Point-To-Point ICP Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Point-to-Plane-ICP-Registration">Point-to-Plane ICP Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Colored-ICP-Registration">Colored ICP Registration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Setting-baseline-with-point-to-plane-registration">Setting baseline with point-to-plane registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Colored-Registration">Colored Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="t_robust_kernel.html">Robust Kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/index.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reconstruction_system/index.html">Reconstruction system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../t_reconstruction_system/index.html">Reconstruction system (Tensor)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sensor/index.html">Sensor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contribute</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/contribute.html">Contributing to Open3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/contribution_recipes.html">Contribution methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/styleguide.html">Open3D style guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">C++ API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cpp_api.html">C++ documentation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Python API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.camera.html">open3d.camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.core.html">open3d.core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.geometry.html">open3d.geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.io.html">open3d.io</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.t.html">open3d.t</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.ml.html">open3d.ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.pipelines.html">open3d.pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.utility.html">open3d.utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.visualization.html">open3d.visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api/open3d.visualization.tensorboard_plugin.summary.html">open3d.visualization.tensorboard_plugin.summary</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Open3D</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Pipelines (Tensor)</a> &raquo;</li>
+        
+      <li>ICP registration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ICP-registration">
+<h1>ICP registration<a class="headerlink" href="#ICP-registration" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial demonstrates the ICP (Iterative Closest Point) registration algorithm. It has been a mainstay of geometric registration in both research and industry for many years. The inputs are two point clouds and an initial transformation that roughly aligns the source point cloud to the target point cloud. The output is a refined transformation that tightly aligns the two point clouds. A helper function <code class="docutils literal notranslate"><span class="pre">draw_registration_result</span></code> visualizes the alignment during the registration process. In
+this tutorial, we show differnt ICP variants, and the API for using them.</p>
+<div class="section" id="Helper-visualization-function">
+<h2>Helper visualization function<a class="headerlink" href="#Helper-visualization-function" title="Permalink to this headline">¶</a></h2>
+<p>The function below visualizes a target point cloud and a source point cloud transformed with an alignment transformation. The target point cloud and the source point cloud are painted with cyan and yellow colors respectively. The more and tighter the two point-clouds overlap with each other, the better the alignment result.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+    <span class="n">source_temp</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+    <span class="n">target_temp</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+
+    <span class="n">source_temp</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+
+    <span class="c1"># This is patched version for tutorial rendering.</span>
+    <span class="c1"># Use `draw` function for you application.</span>
+    <span class="n">o3d</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">draw_geometries</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">source_temp</span><span class="o">.</span><span class="n">to_legacy</span><span class="p">(),</span>
+         <span class="n">target_temp</span><span class="o">.</span><span class="n">to_legacy</span><span class="p">()],</span>
+        <span class="n">zoom</span><span class="o">=</span><span class="mf">0.4459</span><span class="p">,</span>
+        <span class="n">front</span><span class="o">=</span><span class="p">[</span><span class="mf">0.9288</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2951</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2242</span><span class="p">],</span>
+        <span class="n">lookat</span><span class="o">=</span><span class="p">[</span><span class="mf">1.6784</span><span class="p">,</span> <span class="mf">2.0612</span><span class="p">,</span> <span class="mf">1.4451</span><span class="p">],</span>
+        <span class="n">up</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.3402</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9189</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1996</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Understanding-ICP-Algorithm">
+<h2>Understanding ICP Algorithm<a class="headerlink" href="#Understanding-ICP-Algorithm" title="Permalink to this headline">¶</a></h2>
+<p>In general, the ICP algorithm iterates over two steps:</p>
+<ol class="arabic simple">
+<li><p>Find correspondence set <span class="math notranslate nohighlight">\(\mathcal{K}=\{(\mathbf{p}, \mathbf{q})\}\)</span> from target point cloud <span class="math notranslate nohighlight">\(\mathbf{P}\)</span>, and source point cloud <span class="math notranslate nohighlight">\(\mathbf{Q}\)</span> transformed with current transformation matrix <span class="math notranslate nohighlight">\(\mathbf{T}\)</span>.</p></li>
+<li><p>Update the transformation <span class="math notranslate nohighlight">\(\mathbf{T}\)</span> by minimizing an objective function <span class="math notranslate nohighlight">\(E(\mathbf{T})\)</span> defined over the correspondence set <span class="math notranslate nohighlight">\(\mathcal{K}\)</span>.</p></li>
+</ol>
+<p>Different variants of ICP use different objective functions <span class="math notranslate nohighlight">\(E(\mathbf{T})\)</span> <a class="reference external" href="../reference.html#beslandmckay1992">[BeslAndMcKay1992]</a> <a class="reference external" href="../reference.html#chenandmedioni1992">[ChenAndMedioni1992]</a> <a class="reference external" href="../reference.html#park2017">[Park2017]</a>.</p>
+<div class="section" id="Different-variants-of-ICP">
+<h3>Different variants of ICP<a class="headerlink" href="#Different-variants-of-ICP" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Point-to-point-ICP">
+<h4>Point-to-point ICP<a class="headerlink" href="#Point-to-point-ICP" title="Permalink to this headline">¶</a></h4>
+<p>We first show a point-to-point ICP algorithm <a class="reference external" href="../reference.html#beslandmckay1992">[BeslAndMcKay1992]</a> using the objective</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E(\mathbf{T}) = \sum_{(\mathbf{p},\mathbf{q})\in\mathcal{K}}\|\mathbf{p} - \mathbf{T}\mathbf{q}\|^{2}
+\end{equation}</div><p>The class <code class="docutils literal notranslate"><span class="pre">TransformationEstimationPointToPoint</span></code> provides functions to compute the residuals and Jacobian matrices of the point-to-point ICP objective.</p>
+<hr class="docutils" />
+</div>
+<div class="section" id="Point-to-plane-ICP">
+<h4>Point-to-plane ICP<a class="headerlink" href="#Point-to-plane-ICP" title="Permalink to this headline">¶</a></h4>
+<p>The point-to-plane ICP algorithm <a class="reference external" href="../reference.html#chenandmedioni1992">[ChenAndMedioni1992]</a> uses a different objective function</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E(\mathbf{T}) = \sum_{(\mathbf{p},\mathbf{q})\in\mathcal{K}}\big((\mathbf{p} - \mathbf{T}\mathbf{q})\cdot\mathbf{n}_{\mathbf{p}}\big)^{2},
+\end{equation}</div><p>where <span class="math notranslate nohighlight">\(\mathbf{n}_{\mathbf{p}}\)</span> is the normal of point <span class="math notranslate nohighlight">\(\mathbf{p}\)</span>. <a class="reference external" href="../reference.html#rusinkiewicz2001">[Rusinkiewicz2001]</a> has shown that the point-to-plane ICP algorithm has a faster convergence speed than the point-to-point ICP algorithm.</p>
+<p>The class <code class="docutils literal notranslate"><span class="pre">TransformationEstimationPointToPlane</span></code> provides functions to compute the residuals and Jacobian matrices of the point-to-plane ICP objective.</p>
+<hr class="docutils" />
+</div>
+<div class="section" id="Colored-ICP">
+<h4>Colored ICP<a class="headerlink" href="#Colored-ICP" title="Permalink to this headline">¶</a></h4>
+<p>Following <a class="reference external" href="../reference.html#park2017">[Park2017]</a>, it runs ICP iterations with a joint optimization objective</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E(\mathbf{T}) = (1-\delta)E_{C}(\mathbf{T}) + \delta E_{G}(\mathbf{T})
+\end{equation}</div><p>where <span class="math notranslate nohighlight">\(\mathbf{T}\)</span> is the transformation matrix to be estimated. <span class="math notranslate nohighlight">\(E_{C}\)</span> and <span class="math notranslate nohighlight">\(E_{G}\)</span> are the photometric and geometric terms, respectively. <span class="math notranslate nohighlight">\(\delta\in[0,1]\)</span> is a weight parameter that has been determined empirically.</p>
+<p>The geometric term <span class="math notranslate nohighlight">\(E_{G}\)</span> is the same as the Point-to-plane ICP objective</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E_{G}(\mathbf{T}) = \sum_{(\mathbf{p},\mathbf{q})\in\mathcal{K}}\big((\mathbf{p} - \mathbf{T}\mathbf{q})\cdot\mathbf{n}_{\mathbf{p}}\big)^{2},
+\end{equation}</div><p>where <span class="math notranslate nohighlight">\(\mathcal{K}\)</span> is the correspondence set in the current iteration. <span class="math notranslate nohighlight">\(\mathbf{n}_{\mathbf{p}}\)</span> is the normal of point <span class="math notranslate nohighlight">\(\mathbf{p}\)</span>.</p>
+<p>The color term <span class="math notranslate nohighlight">\(E_{C}\)</span> measures the difference between the color of point <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> (denoted as <span class="math notranslate nohighlight">\(C(\mathbf{q})\)</span>) and the color of its projection on the tangent plane of <span class="math notranslate nohighlight">\(\mathbf{p}\)</span>.</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E_{C}(\mathbf{T}) = \sum_{(\mathbf{p},\mathbf{q})\in\mathcal{K}}\big(C_{\mathbf{p}}(\mathbf{f}(\mathbf{T}\mathbf{q})) - C(\mathbf{q})\big)^{2},
+\end{equation}</div><p>where <span class="math notranslate nohighlight">\(C_{\mathbf{p}}(\cdot)\)</span> is a precomputed function continuously defined on the tangent plane of <span class="math notranslate nohighlight">\(\mathbf{p}\)</span>. Function<span class="math notranslate nohighlight">\(\mathbf{f}(\cdot)\)</span> projects a 3D point to the tangent plane. For more details, refer to <a class="reference external" href="../reference.html#park2017">[Park2017]</a>.</p>
+<p>To further improve efficiency, <a class="reference external" href="../reference.html#park2017">[Park2017]</a> proposes a multi-scale registration scheme.</p>
+<p>The class <code class="docutils literal notranslate"><span class="pre">TransformationEstimationForColoredICP</span></code> provides functions to compute the residuals and Jacobian matrices of the joint optimization objective.</p>
+<hr class="docutils" />
+</div>
+</div>
+</div>
+<div class="section" id="Understanding-ICP-API">
+<h2>Understanding ICP API<a class="headerlink" href="#Understanding-ICP-API" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title fa fa-exclamation-circle"><strong>Note:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Tensor</span> <span class="pre">based</span> <span class="pre">ICP</span> <span class="pre">implementation</span></code> API is slightly different than the <a class="reference internal" href="../pipelines/icp_registration.html"><span class="doc">Eigen based ICP implementation</span></a>, to support more functionalities.</p>
+</div>
+<div class="section" id="Input">
+<h3>Input<a class="headerlink" href="#Input" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">PointClouds</span></code> between which the <code class="docutils literal notranslate"><span class="pre">Transformation</span></code> is to be estimated. [open3d.t.PointCloud]</p>
+<ul class="simple">
+<li><p>Source Tensor PointCloud. [Float32 or Float64 dtypes are supported].</p></li>
+<li><p>Target Tensor PointCloud. [Float32 or Float64 dtypes are supported].</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title fa fa-exclamation-circle"><strong>Note:</strong></p>
+<p>The initial alignment is usually obtained by a global registration algorithm.</p>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">source</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_0.pcd&quot;</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_1.pcd&quot;</span><span class="p">)</span>
+
+<span class="c1"># For Colored-ICP `colors` attribute must be of the same dtype as `positions` and `normals` attribute.</span>
+<span class="n">source</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+    <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Dtype</span><span class="o">.</span><span class="n">Float32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+<span class="n">target</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+    <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Dtype</span><span class="o">.</span><span class="n">Float32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+
+<span class="c1"># Initial guess transform between the two point-cloud.</span>
+<span class="c1"># ICP algortihm requires a good initial allignment to converge efficiently.</span>
+<span class="n">trans_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">0.862</span><span class="p">,</span> <span class="mf">0.011</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.507</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                         <span class="p">[</span><span class="o">-</span><span class="mf">0.139</span><span class="p">,</span> <span class="mf">0.967</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.215</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+                         <span class="p">[</span><span class="mf">0.487</span><span class="p">,</span> <span class="mf">0.255</span><span class="p">,</span> <span class="mf">0.835</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.4</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">trans_init</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_12_0.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_12_0.png" />
+</div>
+</div>
+<hr class="docutils" />
+</div>
+<div class="section" id="Parameters">
+<h3>Parameters<a class="headerlink" href="#Parameters" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Max-correspondence-Distances">
+<h4>Max correspondence Distances<a class="headerlink" href="#Max-correspondence-Distances" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>This is the radius of distance from each point in the source point-cloud in which the neighbour search will try to find a corresponding point in the target point-cloud.</p></li>
+<li><p>It is a <code class="docutils literal notranslate"><span class="pre">double</span></code> for <code class="docutils literal notranslate"><span class="pre">icp</span></code>, and <code class="docutils literal notranslate"><span class="pre">utility.DoubleVector</span></code> for <code class="docutils literal notranslate"><span class="pre">multi-scale-icp</span></code>.</p></li>
+<li><p>One may typically keep this parameter between <code class="docutils literal notranslate"><span class="pre">1.0x</span> <span class="pre">-</span> <span class="pre">3.0x</span></code> <code class="docutils literal notranslate"><span class="pre">voxel-size</span></code> for each scale.</p></li>
+<li><p>This parameter is most important for performance tuning, as a higher radius will take larger time (as the neighbour search will be performed over a larger radius).</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># For Vanilla ICP (double)</span>
+
+<span class="c1"># Search distance for Nearest Neighbour Search [Hybrid-Search is used].</span>
+<span class="n">max_correspondence_distance</span> <span class="o">=</span> <span class="mf">0.07</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># For Multi-Scale ICP (o3d.utility.DoubleVector):</span>
+
+<span class="c1"># `max_correspondence_distances` is proportianal to the resolution or the `voxel_sizes`.</span>
+<span class="c1"># In general it is recommended to use values between 1x - 3x of the corresponding `voxel_sizes`.</span>
+<span class="c1"># We may have a higher value of the `max_correspondence_distances` for the first coarse</span>
+<span class="c1"># scale, as it is not much expensive, and gives us more tolerance to initial allignment.</span>
+<span class="n">max_correspondence_distances</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">utility</span><span class="o">.</span><span class="n">DoubleVector</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.14</span><span class="p">,</span> <span class="mf">0.07</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Initial-Transform-from-Source-to-Target-[open3d.core.Tensor]">
+<h4>Initial Transform from Source to Target [open3d.core.Tensor]<a class="headerlink" href="#Initial-Transform-from-Source-to-Target-[open3d.core.Tensor]" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Initial estimate for transformation from source to target.</p></li>
+<li><p>Transformation matrix Tensor of shape [4, 4] of type <code class="docutils literal notranslate"><span class="pre">Float64</span></code> on <code class="docutils literal notranslate"><span class="pre">CPU:0</span></code> device</p></li>
+<li><p>The initial alignment is usually obtained by a global registration algorithm. See <a class="reference internal" href="../pipelines/global_registration.html"><span class="doc">Global registration</span></a> for examples.</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Initial alignment or source to target transform.</span>
+<span class="n">init_source_to_target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">0.862</span><span class="p">,</span> <span class="mf">0.011</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.507</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="mf">0.139</span><span class="p">,</span> <span class="mf">0.967</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.215</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="mf">0.487</span><span class="p">,</span> <span class="mf">0.255</span><span class="p">,</span> <span class="mf">0.835</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.4</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Estimation-Method">
+<h4>Estimation Method<a class="headerlink" href="#Estimation-Method" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>This sets the ICP method to compute the transformation between two point-clouds given the correspondences.</p></li>
+</ul>
+<p>Options:</p>
+<ul class="simple">
+<li><p><strong>o3d.t.pipelines.registration.TransformationEstimationPointToPoint()</strong></p>
+<ul>
+<li><p>Point to Point ICP.</p></li>
+</ul>
+</li>
+<li><p><strong>o3d.t.pipelines.registration.TransformationEstimationPointToPlane(robust_kernel)</strong></p>
+<ul>
+<li><p>Point to Plane ICP.</p></li>
+<li><p>Requires <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">point-cloud</span></code> to have <code class="docutils literal notranslate"><span class="pre">normals</span></code> attribute (of same dtype as <code class="docutils literal notranslate"><span class="pre">position</span></code> attribute).</p></li>
+</ul>
+</li>
+<li><p><strong>o3d.t.pipelines.registration.TransformationEstimationForColoredICP(robust_kernel, lambda)</strong></p>
+<ul>
+<li><p>Colored ICP.</p></li>
+<li><p>Requires <code class="docutils literal notranslate"><span class="pre">target</span></code> point-cloud to have <code class="docutils literal notranslate"><span class="pre">normals</span></code> attribute (of same dtype as <code class="docutils literal notranslate"><span class="pre">position</span></code> attribute).</p></li>
+<li><p>Requires <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">target</span></code> point-clouds to have <code class="docutils literal notranslate"><span class="pre">colors</span></code> attribute (of same dtype as <code class="docutils literal notranslate"><span class="pre">position</span></code> attribute).</p></li>
+</ul>
+</li>
+<li><p><strong>o3d.t.pipelines.registration.TransformationEstimationForGeneralizedICP(robust_kernel, epsilon)</strong> [To be added].</p>
+<ul>
+<li><p>Generalized ICP.</p></li>
+</ul>
+</li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Select the `Estimation Method`, and `Robust Kernel` (for outlier-rejection).</span>
+<span class="n">estimation</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">TransformationEstimationPointToPlane</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Estimation Method also supports <code class="docutils literal notranslate"><span class="pre">Robust</span> <span class="pre">Kernels</span></code>: Robust kernels are used for outlier rejection. More on this in <code class="docutils literal notranslate"><span class="pre">Robust</span> <span class="pre">Kernel</span></code> section.</p>
+<p><code class="docutils literal notranslate"><span class="pre">robust_kernel</span> <span class="pre">=</span> <span class="pre">o3d.t.pipelines.registration.robust_kernel.RobustKernel(method,</span> <span class="pre">scale,</span> <span class="pre">shape)</span></code></p>
+<p>Method options:</p>
+<ul class="simple">
+<li><p>robust_kernel.RobustKernelMethod.L2Loss</p></li>
+<li><p>robust_kernel.RobustKernelMethod.L1Loss</p></li>
+<li><p>robust_kernel.RobustKernelMethod.HuberLoss</p></li>
+<li><p>robust_kernel.RobustKernelMethod.CauchyLoss</p></li>
+<li><p>robust_kernel.RobustKernelMethod.GMLoss</p></li>
+<li><p>robust_kernel.RobustKernelMethod.TukeyLoss</p></li>
+<li><p>robust_kernel.RobustKernelMethod.GeneralizedLoss</p></li>
+</ul>
+</div>
+<div class="section" id="ICP-Convergence-Criteria-[relative-rmse,-relative-fitness,-max-iterations]">
+<h4>ICP Convergence Criteria [relative rmse, relative fitness, max iterations]<a class="headerlink" href="#ICP-Convergence-Criteria-[relative-rmse,-relative-fitness,-max-iterations]" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>This sets the condition for termination or when the scale iterations can be considered to be converged.</p></li>
+<li><p>If the relative (of change in value from the last iteration) rmse and fitness are equal or less than the specified value, the iterations for that scale will be considered as converged/completed.</p></li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">Multi-Scale</span> <span class="pre">ICP</span></code> it is a <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">ICPConvergenceCriteria</span></code>, for each scale of ICP, to provide more fine control over performance.</p></li>
+<li><p>One may keep the initial values of <code class="docutils literal notranslate"><span class="pre">relative_fitness</span></code> and <code class="docutils literal notranslate"><span class="pre">relative_rmse</span></code> low as we just want to get an estimate transformation, and high for later iterations to fine-tune.</p></li>
+<li><p>Iterations on higher-resolution is more costly (takes more time), so we want to do fewer iterations on higher resolution.</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Convergence-Criteria for Vanilla ICP:</span>
+
+<span class="n">criteria</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="n">relative_fitness</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">,</span>
+                                       <span class="n">relative_rmse</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">,</span>
+                                       <span class="n">max_iteration</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># List of Convergence-Criteria for Multi-Scale ICP:</span>
+
+<span class="c1"># We can control `ConvergenceCriteria` of each `scale` individually.</span>
+<span class="c1"># We want to keep `relative_fitness` and `relative_rmse` high (more error tolerance)</span>
+<span class="c1"># for initial scales, i.e. we will be happy to consider ICP converged, when difference</span>
+<span class="c1"># between 2 successive iterations for that scale is smaller than this value.</span>
+<span class="c1"># We expect less accuracy (more error tolerance) initial coarse-scale iteration,</span>
+<span class="c1"># and want our later scale convergence to be more accurate (less error tolerance).</span>
+<span class="n">criteria_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="n">relative_fitness</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+                                <span class="n">relative_rmse</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+                                <span class="n">max_iteration</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="mf">0.00001</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="mf">0.000001</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Voxel-Sizes">
+<h4>Voxel Sizes<a class="headerlink" href="#Voxel-Sizes" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>It is the voxel size (lower voxel size corresponds to higher resolution), for each scale of multi-scale ICP.</p></li>
+<li><p>We want to perform initial iterations on a coarse point-cloud (low-resolution or small voxel size) (as it is more time-efficient, and avoids local-minima), and then move to a dense point-cloud (high-resolution or small voxel size. Therefore the voxel sizes must be strictly decreasing order.</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Vanilla ICP</span>
+<span class="n">voxel_size</span> <span class="o">=</span> <span class="mf">0.025</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Lower `voxel_size` is equivalent to higher resolution,</span>
+<span class="c1"># and we want to perform iterations from coarse to dense resolution,</span>
+<span class="c1"># therefore `voxel_sizes` must be in strictly decressing order.</span>
+<span class="n">voxel_sizes</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">utility</span><span class="o">.</span><span class="n">DoubleVector</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Save-Loss-Log">
+<h4>Save Loss Log<a class="headerlink" href="#Save-Loss-Log" title="Permalink to this headline">¶</a></h4>
+<p>When <code class="docutils literal notranslate"><span class="pre">True</span></code>, it saves the iteration-wise values of <code class="docutils literal notranslate"><span class="pre">fitness</span></code>, <code class="docutils literal notranslate"><span class="pre">inlier_rmse</span></code>, <code class="docutils literal notranslate"><span class="pre">transformaton</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">iteration</span></code> in <code class="docutils literal notranslate"><span class="pre">loss_log_</span></code> in <code class="docutils literal notranslate"><span class="pre">regsitration_result</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">save_loss_log</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+</div>
+</div>
+</div>
+<div class="section" id="Vanilla-ICP-Example">
+<h2>Vanilla ICP Example<a class="headerlink" href="#Vanilla-ICP-Example" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Input point-clouds</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_0.pcd&quot;</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_1.pcd&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Search distance for Nearest Neighbour Search [Hybrid-Search is used].</span>
+<span class="n">max_correspondence_distance</span> <span class="o">=</span> <span class="mf">0.07</span>
+
+<span class="c1"># Initial alignment or source to target transform.</span>
+<span class="n">init_source_to_target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">0.862</span><span class="p">,</span> <span class="mf">0.011</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.507</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="mf">0.139</span><span class="p">,</span> <span class="mf">0.967</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.215</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="mf">0.487</span><span class="p">,</span> <span class="mf">0.255</span><span class="p">,</span> <span class="mf">0.835</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.4</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+
+<span class="c1"># Select the `Estimation Method`, and `Robust Kernel` (for outlier-rejection).</span>
+<span class="n">estimation</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">TransformationEstimationPointToPlane</span><span class="p">()</span>
+
+<span class="c1"># Convergence-Criteria for Vanilla ICP</span>
+<span class="n">criteria</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="n">relative_fitness</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">,</span>
+                                       <span class="n">relative_rmse</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">,</span>
+                                       <span class="n">max_iteration</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="c1"># Down-sampling voxel-size.</span>
+<span class="n">voxel_size</span> <span class="o">=</span> <span class="mf">0.025</span>
+
+<span class="c1"># Save iteration wise `fitness`, `inlier_rmse`, etc. to analyse and tune result.</span>
+<span class="n">save_loss_log</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">registration_icp</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distance</span><span class="p">,</span>
+                            <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span>
+                            <span class="n">voxel_size</span><span class="p">,</span> <span class="n">save_loss_log</span><span class="p">)</span>
+
+<span class="n">icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by ICP: &quot;</span><span class="p">,</span> <span class="n">icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier Fitness: &quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Time taken by ICP:  0.09581899642944336
+Inlier Fitness:  0.6755917076201774
+Inlier RMSE:  0.017588826709976697
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_37_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_37_1.png" />
+</div>
+</div>
+<hr class="docutils" />
+<p>Now let’s try with poor initial initialisation</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">init_source_to_target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tensor</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Dtype</span><span class="o">.</span><span class="n">Float32</span><span class="p">)</span>
+<span class="n">max_correspondence_distance</span> <span class="o">=</span> <span class="mf">0.07</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">registration_icp</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distance</span><span class="p">,</span>
+                            <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span>
+                            <span class="n">voxel_size</span><span class="p">,</span> <span class="n">save_loss_log</span><span class="p">)</span>
+
+<span class="n">icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by ICP: &quot;</span><span class="p">,</span> <span class="n">icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier Fitness: &quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Time taken by ICP:  0.11447286605834961
+Inlier Fitness:  0.31762978026323224
+Inlier RMSE:  0.03334820542412925
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_40_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_40_1.png" />
+</div>
+</div>
+<p>As we can see, poor initial allignment might fail ICP convergence</p>
+<p>Having large <code class="docutils literal notranslate"><span class="pre">max_correspondence_distance</span></code> might resolve this issue. But it will take longer to process.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">init_source_to_target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tensor</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">o3c</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">max_correspondence_distance</span> <span class="o">=</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="c1"># It is highly recommended to down-sample the point-cloud before using</span>
+<span class="c1"># ICP algorithm, for better performance.</span>
+
+<span class="n">registration_icp</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distance</span><span class="p">,</span>
+                            <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span>
+                            <span class="n">voxel_size</span><span class="p">,</span> <span class="n">save_loss_log</span><span class="p">)</span>
+
+<span class="n">icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by ICP: &quot;</span><span class="p">,</span> <span class="n">icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier Fitness: &quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Time taken by ICP:  3.5850749015808105
+Inlier Fitness:  0.8366378579901712
+Inlier RMSE:  0.1332996956737737
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_43_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_43_1.png" />
+</div>
+</div>
+<p>We may resolve the above issues and get even better accuracy by using <code class="docutils literal notranslate"><span class="pre">Multi-Scale</span> <span class="pre">ICP</span></code></p>
+<hr class="docutils" />
+</div>
+<div class="section" id="Multi-Scale-ICP-Example">
+<h2>Multi-Scale ICP Example<a class="headerlink" href="#Multi-Scale-ICP-Example" title="Permalink to this headline">¶</a></h2>
+<p>Problems with using Vanilla-ICP (previous version):</p>
+<ul class="simple">
+<li><p>Running the ICP algorithm on dense point-clouds is very slow.</p></li>
+<li><p>It requires good initial alignment:</p>
+<ul>
+<li><p>If the point-cloud is not well aligned, the convergence might get stuck in local-minima in initial iterations.</p></li>
+<li><p>We need to have a larger <code class="docutils literal notranslate"><span class="pre">max_correspondence_distance</span></code> if the aligned point cloud does not have sufficient overlaps.</p></li>
+</ul>
+</li>
+<li><p>If point-cloud is heavily down-sampled (coarse), the obtained result will not be accurate.</p></li>
+</ul>
+<p>These drawbacks can be solved using Multi-Scale ICP. In Multi-Scale ICP, we perform the initial iterations on coarse point-cloud to get a better estimate of initial alignment and use this alignment for convergence on a more dense point cloud. ICP on coarse point cloud is in-expensive, and allows us to use a larger <code class="docutils literal notranslate"><span class="pre">max_correspondence_distance</span></code>. It is also less likely for the convergence to get stuck in local minima. As we get a good estimate, it takes fewer iterations on dense point-cloud to
+converge to a more accurate transform.</p>
+<p>It is recommended to use <code class="docutils literal notranslate"><span class="pre">Multi-Scale</span> <span class="pre">ICP</span></code> over <code class="docutils literal notranslate"><span class="pre">ICP</span></code>, for efficient convergence, especially for large point clouds.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Input point-clouds</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_0.pcd&quot;</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_1.pcd&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">voxel_sizes</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">utility</span><span class="o">.</span><span class="n">DoubleVector</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+
+<span class="c1"># List of Convergence-Criteria for Multi-Scale ICP:</span>
+<span class="n">criteria_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="n">relative_fitness</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+                                <span class="n">relative_rmse</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+                                <span class="n">max_iteration</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="mf">0.00001</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="mf">0.000001</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="c1"># `max_correspondence_distances` for Multi-Scale ICP (o3d.utility.DoubleVector):</span>
+<span class="n">max_correspondence_distances</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">utility</span><span class="o">.</span><span class="n">DoubleVector</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.14</span><span class="p">,</span> <span class="mf">0.07</span><span class="p">])</span>
+
+<span class="c1"># Initial alignment or source to target transform.</span>
+<span class="n">init_source_to_target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Tensor</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Dtype</span><span class="o">.</span><span class="n">Float32</span><span class="p">)</span>
+
+<span class="c1"># Select the `Estimation Method`, and `Robust Kernel` (for outlier-rejection).</span>
+<span class="n">estimation</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">TransformationEstimationPointToPlane</span><span class="p">()</span>
+
+<span class="c1"># Save iteration wise `fitness`, `inlier_rmse`, etc. to analyse and tune result.</span>
+<span class="n">save_loss_log</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Setting Verbosity to Debug, helps in fine-tuning the performance.</span>
+<span class="c1"># o3d.utility.set_verbosity_level(o3d.utility.VerbosityLevel.Debug)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">registration_ms_icp</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">multi_scale_icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">voxel_sizes</span><span class="p">,</span>
+                                           <span class="n">criteria_list</span><span class="p">,</span>
+                                           <span class="n">max_correspondence_distances</span><span class="p">,</span>
+                                           <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">,</span>
+                                           <span class="n">save_loss_log</span><span class="p">)</span>
+
+<span class="n">ms_icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by Multi-Scale ICP: &quot;</span><span class="p">,</span> <span class="n">ms_icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier Fitness: &quot;</span><span class="p">,</span> <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Time taken by Multi-Scale ICP:  0.08458209037780762
+Inlier Fitness:  0.6755352200192057
+Inlier RMSE:  0.017572267811192196
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_52_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_52_1.png" />
+</div>
+</div>
+<div class="section" id="Plotting-Convergence-Graph">
+<h3>Plotting Convergence Graph<a class="headerlink" href="#Plotting-Convergence-Graph" title="Permalink to this headline">¶</a></h3>
+<p>We can use the <code class="docutils literal notranslate"><span class="pre">registration_result.loss_log</span></code>, to plot convergence and fine-tune our application.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+
+<span class="k">def</span> <span class="nf">plot_rmse</span><span class="p">(</span><span class="n">registration_result</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE vs Iteration&quot;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">registration_result</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+              <span class="n">registration_result</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;inlier_rmse&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">plot_scale_wise_rmse</span><span class="p">(</span><span class="n">registration_result</span><span class="p">):</span>
+    <span class="n">scales</span> <span class="o">=</span> <span class="n">registration_result</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">iterations</span> <span class="o">=</span> <span class="n">registration_result</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;iteration&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+    <span class="n">num_scales</span> <span class="o">=</span> <span class="n">scales</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="n">num_scales</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+    <span class="n">masks</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">scale</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_scales</span><span class="p">):</span>
+        <span class="n">masks</span><span class="p">[</span><span class="n">scale</span><span class="p">]</span> <span class="o">=</span> <span class="n">registration_result</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">scale</span>
+
+        <span class="n">rmse</span> <span class="o">=</span> <span class="n">registration_result</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;inlier_rmse&quot;</span><span class="p">][</span><span class="n">masks</span><span class="p">[</span><span class="n">scale</span><span class="p">]]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">iteration</span> <span class="o">=</span> <span class="n">registration_result</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;iteration&quot;</span><span class="p">][</span>
+            <span class="n">masks</span><span class="p">[</span><span class="n">scale</span><span class="p">]]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+        <span class="n">title_prefix</span> <span class="o">=</span> <span class="s2">&quot;Scale Index: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">scale</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title_prefix</span> <span class="o">+</span> <span class="s2">&quot; Inlier RMSE vs Iteration&quot;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">scale</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">rmse</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vanilla ICP&quot;</span><span class="p">)</span>
+<span class="n">plot_rmse</span><span class="p">(</span><span class="n">registration_icp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Vanilla ICP
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_55_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_55_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Multi Scale ICP&quot;</span><span class="p">)</span>
+<span class="n">plot_rmse</span><span class="p">(</span><span class="n">registration_ms_icp</span><span class="p">)</span>
+<span class="n">plot_scale_wise_rmse</span><span class="p">(</span><span class="n">registration_ms_icp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Multi Scale ICP
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_56_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_56_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_56_2.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_56_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="n">axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Vanilla ICP and Multi-Scale ICP `Inlier RMSE` vs `Iteration`&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span>
+        <span class="n">registration_icp</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;inlier_rmse&quot;</span><span class="p">]):</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+              <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;inlier_rmse&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+              <span class="n">registration_icp</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;inlier_rmse&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">registration_icp</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+              <span class="n">registration_icp</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;inlier_rmse&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+              <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">loss_log</span><span class="p">[</span><span class="s2">&quot;inlier_rmse&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_57_0.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_57_0.png" />
+</div>
+</div>
+<hr class="docutils" />
+</div>
+<div class="section" id="Multi-Scale-ICP-on-CUDA-device-Example">
+<h3>Multi-Scale ICP on CUDA device Example<a class="headerlink" href="#Multi-Scale-ICP-on-CUDA-device-Example" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># The algorithm runs on the same device as the source and target point-cloud.</span>
+<span class="n">source_cuda</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">cuda</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">target_cuda</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">cuda</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">registration_ms_icp</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">multi_scale_icp</span><span class="p">(</span><span class="n">source_cuda</span><span class="p">,</span> <span class="n">target_cuda</span><span class="p">,</span>
+                                           <span class="n">voxel_sizes</span><span class="p">,</span> <span class="n">criteria_list</span><span class="p">,</span>
+                                           <span class="n">max_correspondence_distances</span><span class="p">,</span>
+                                           <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">,</span>
+                                           <span class="n">save_loss_log</span><span class="p">)</span>
+
+<span class="n">ms_icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by Multi-Scale ICP: &quot;</span><span class="p">,</span> <span class="n">ms_icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier Fitness: &quot;</span><span class="p">,</span> <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">target</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span>
+                         <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Time taken by Multi-Scale ICP:  0.05163884162902832
+Inlier Fitness:  0.6756481952211489
+Inlier RMSE:  0.017594977862598893
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_61_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_61_1.png" />
+</div>
+</div>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="Case-of-no-correspondences.">
+<h2>Case of <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">correspondences</span></code>.<a class="headerlink" href="#Case-of-no-correspondences." title="Permalink to this headline">¶</a></h2>
+<p>In case of <code class="docutils literal notranslate"><span class="pre">no_correspondences</span></code> the <code class="docutils literal notranslate"><span class="pre">fitness</span></code> and <code class="docutils literal notranslate"><span class="pre">inlier_rmse</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">max_correspondence_distance</span> <span class="o">=</span> <span class="mf">0.02</span>
+
+<span class="n">init_source_to_target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+
+<span class="n">registration_icp</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distance</span><span class="p">,</span>
+                            <span class="n">init_source_to_target</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier Fitness: &quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transformation: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">fitness</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">registration_icp</span><span class="o">.</span><span class="n">inlier_rmse</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ICP Convergence Failed, as no correspondence were found&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-intense-fg ansi-bold">[Open3D WARNING] 0 correspondence present between the pointclouds. Try increasing the max_correspondence_distance parameter.</span>
+<span class="ansi-yellow-intense-fg ansi-bold">[Open3D WARNING] 0 correspondence present between the pointclouds. Try increasing the max_correspondence_distance parameter.</span>
+Inlier Fitness:  0.0
+Inlier RMSE:  0.0
+Transformation:
+ [[1.0 0.0 0.0 0.0],
+ [0.0 1.0 0.0 0.0],
+ [0.0 0.0 1.0 0.0],
+ [0.0 0.0 0.0 1.0]]
+Tensor[shape={4, 4}, stride={4, 1}, Float64, CPU:0, 0x5607925f9800]
+ICP Convergence Failed, as no correspondence were found
+</pre></div></div>
+</div>
+<hr class="docutils" />
+</div>
+<div class="section" id="Information-Matrix">
+<h2>Information Matrix<a class="headerlink" href="#Information-Matrix" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Information</span> <span class="pre">Matrix</span></code> gives us futher information about how well the point-clouds are alligned.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">information_matrix</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">get_information_matrix</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distances</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">registration_ms_icp</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">information_matrix</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[845512. -521776. -421440. 0.0 -200611. 256844.],
+ [-521776. 911477. -389199. 200611. 0.0 -267063.],
+ [-421440. -389199. 1.1222e+06 -256844. 267063. 0.0],
+ [0.0 200611. -256844. 130609. 0.0 0.0],
+ [-200611. 0.0 267063. 0.0 130609. 0.0],
+ [256844. -267063. 0.0 0.0 0.0 130609.]]
+Tensor[shape={6, 6}, stride={6, 1}, Float64, CPU:0, 0x56079269ce70]
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p>Now that we have a basic understanding of the ICP algorithm and the API, let’s experiment with the different versions to understand the difference</p>
+</div>
+<div class="section" id="Initial-Allignment">
+<h2>Initial Allignment<a class="headerlink" href="#Initial-Allignment" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">source</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_0.pcd&quot;</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_1.pcd&quot;</span><span class="p">)</span>
+
+<span class="c1"># Initial guess transform between the two point-cloud.</span>
+<span class="c1"># ICP algortihm requires a good initial allignment to converge efficiently.</span>
+<span class="n">trans_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">0.862</span><span class="p">,</span> <span class="mf">0.011</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.507</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                         <span class="p">[</span><span class="o">-</span><span class="mf">0.139</span><span class="p">,</span> <span class="mf">0.967</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.215</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+                         <span class="p">[</span><span class="mf">0.487</span><span class="p">,</span> <span class="mf">0.255</span><span class="p">,</span> <span class="mf">0.835</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.4</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">trans_init</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_72_0.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_72_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Search distance for Nearest Neighbour Search [Hybrid-Search is used].</span>
+<span class="n">max_correspondence_distance</span> <span class="o">=</span> <span class="mf">0.02</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial alignment&quot;</span><span class="p">)</span>
+<span class="n">evaluation</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">evaluate_registration</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span>
+                                        <span class="n">max_correspondence_distance</span><span class="p">,</span> <span class="n">trans_init</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fitness: &quot;</span><span class="p">,</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Initial alignment
+Fitness:  0.17472276007745116
+Inlier RMSE:  0.01177106094721789
+</pre></div></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="Point-To-Point-ICP-Registration">
+<h1>Point-To-Point ICP Registration<a class="headerlink" href="#Point-To-Point-ICP-Registration" title="Permalink to this headline">¶</a></h1>
+<p>We first show a point-to-point ICP algorithm <a class="reference external" href="../reference.html#beslandmckay1992">[BeslAndMcKay1992]</a> using the objective</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E(\mathbf{T}) = \sum_{(\mathbf{p},\mathbf{q})\in\mathcal{K}}\|\mathbf{p} - \mathbf{T}\mathbf{q}\|^{2}
+\end{equation}</div><p>The class <code class="docutils literal notranslate"><span class="pre">TransformationEstimationPointToPoint</span></code> provides functions to compute the residuals and Jacobian matrices of the point-to-point ICP objective.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Input point-clouds</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_0.pcd&quot;</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ICP/cloud_bin_1.pcd&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Select the `Estimation Method`, and `Robust Kernel` (for outlier-rejection).</span>
+<span class="n">estimation</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">TransformationEstimationPointToPoint</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Search distance for Nearest Neighbour Search [Hybrid-Search is used].</span>
+<span class="n">max_correspondence_distance</span> <span class="o">=</span> <span class="mf">0.02</span>
+
+<span class="c1"># Initial alignment or source to target transform.</span>
+<span class="n">init_source_to_target</span> <span class="o">=</span> <span class="n">trans_init</span>
+
+<span class="c1"># Convergence-Criteria for Vanilla ICP</span>
+<span class="n">criteria</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="n">relative_fitness</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">,</span>
+                                       <span class="n">relative_rmse</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">,</span>
+                                       <span class="n">max_iteration</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># Down-sampling voxel-size. If voxel_size &lt; 0, original scale is used.</span>
+<span class="n">voxel_size</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="c1"># Save iteration wise `fitness`, `inlier_rmse`, etc. to analyse and tune result.</span>
+<span class="n">save_loss_log</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Apply Point-to-Point ICP&quot;</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">reg_point_to_point</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distance</span><span class="p">,</span>
+                              <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span>
+                              <span class="n">voxel_size</span><span class="p">,</span> <span class="n">save_loss_log</span><span class="p">)</span>
+
+<span class="n">icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by Point-To-Point ICP: &quot;</span><span class="p">,</span> <span class="n">icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fitness: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_point</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_point</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">reg_point_to_point</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Apply Point-to-Point ICP
+Time taken by Point-To-Point ICP:  0.5433182716369629
+Fitness:  0.3724696356275304
+Inlier RMSE:  0.007761057311332597
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_79_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_79_1.png" />
+</div>
+</div>
+<p>The fitness score increases from <code class="docutils literal notranslate"><span class="pre">0.174722</span></code> to <code class="docutils literal notranslate"><span class="pre">0.372474</span></code>. The inlier_rmse reduces from <code class="docutils literal notranslate"><span class="pre">0.011771</span></code> to <code class="docutils literal notranslate"><span class="pre">0.007761</span></code>. By default, icp runs until convergence or reaches a maximum number of iterations (30 by default). It can be changed to allow more computation time and to improve the results further.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">criteria</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="n">relative_fitness</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">,</span>
+                                       <span class="n">relative_rmse</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">,</span>
+                                       <span class="n">max_iteration</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Apply Point-to-Point ICP&quot;</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">reg_point_to_point</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distance</span><span class="p">,</span>
+                              <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span>
+                              <span class="n">voxel_size</span><span class="p">,</span> <span class="n">save_loss_log</span><span class="p">)</span>
+
+<span class="n">icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by Point-To-Point ICP: &quot;</span><span class="p">,</span> <span class="n">icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fitness: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_point</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_point</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">reg_point_to_point</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Apply Point-to-Point ICP
+Time taken by Point-To-Point ICP:  3.1333651542663574
+Fitness:  0.6211180124223602
+Inlier RMSE:  0.006582823935579351
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_82_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_82_1.png" />
+</div>
+</div>
+<p>The final alignment is tight. The fitness score improves to <code class="docutils literal notranslate"><span class="pre">0.620972</span></code>. The inlier_rmse reduces to <code class="docutils literal notranslate"><span class="pre">0.006581</span></code>.</p>
+<hr class="docutils" />
+</div>
+<div class="section" id="Point-to-Plane-ICP-Registration">
+<h1>Point-to-Plane ICP Registration<a class="headerlink" href="#Point-to-Plane-ICP-Registration" title="Permalink to this headline">¶</a></h1>
+<p>The point-to-plane ICP algorithm <a class="reference external" href="../reference.html#chenandmedioni1992">[ChenAndMedioni1992]</a> uses a different objective function</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E(\mathbf{T}) = \sum_{(\mathbf{p},\mathbf{q})\in\mathcal{K}}\big((\mathbf{p} - \mathbf{T}\mathbf{q})\cdot\mathbf{n}_{\mathbf{p}}\big)^{2},
+\end{equation}</div><p>where <span class="math notranslate nohighlight">\(\mathbf{n}_{\mathbf{p}}\)</span> is the normal of point <span class="math notranslate nohighlight">\(\mathbf{p}\)</span>. <a class="reference external" href="../reference.html#rusinkiewicz2001">[Rusinkiewicz2001]</a> has shown that the point-to-plane ICP algorithm has a faster convergence speed than the point-to-point ICP algorithm.</p>
+<p>The class <code class="docutils literal notranslate"><span class="pre">TransformationEstimationPointToPlane</span></code> provides functions to compute the residuals and Jacobian matrices of the point-to-plane ICP objective.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">estimation</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">TransformationEstimationPointToPlane</span><span class="p">()</span>
+
+<span class="n">criteria</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="n">relative_fitness</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">,</span>
+                                       <span class="n">relative_rmse</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">,</span>
+                                       <span class="n">max_iteration</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Apply Point-to-Plane ICP&quot;</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">reg_point_to_plane</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distance</span><span class="p">,</span>
+                              <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span>
+                              <span class="n">voxel_size</span><span class="p">,</span> <span class="n">save_loss_log</span><span class="p">)</span>
+
+<span class="n">icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by Point-To-Plane ICP: &quot;</span><span class="p">,</span> <span class="n">icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fitness: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_plane</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_plane</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">reg_point_to_plane</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Apply Point-to-Plane ICP
+Time taken by Point-To-Plane ICP:  0.5513269901275635
+Fitness:  0.620972162848593
+Inlier RMSE:  0.006581458157001427
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_86_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_86_1.png" />
+</div>
+</div>
+<p>The point-to-plane ICP reaches tight alignment within 30 iterations (a <code class="docutils literal notranslate"><span class="pre">fitness</span></code> score of 0.620972 and an <code class="docutils literal notranslate"><span class="pre">inlier_rmse</span></code> score of 0.006581).</p>
+<hr class="docutils" />
+</div>
+<div class="section" id="Colored-ICP-Registration">
+<h1>Colored ICP Registration<a class="headerlink" href="#Colored-ICP-Registration" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial demonstrates an ICP variant that uses both geometry and color for registration. It implements the algorithm of <a class="reference external" href="../reference.html#park2017">[Park2017]</a>. The color information locks the alignment along the tangent plane. Thus this algorithm is more accurate and more robust than prior point cloud registration algorithms, while the running speed is comparable to that of ICP registration.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Overriding visualization function, according to best camera view for colored-icp sample data.</span>
+<span class="k">def</span> <span class="nf">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+    <span class="n">source_temp</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+    <span class="n">target_temp</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+
+    <span class="n">source_temp</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+
+    <span class="c1"># This is patched version for tutorial rendering.</span>
+    <span class="c1"># Use `draw` function for you application.</span>
+    <span class="n">o3d</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">draw_geometries</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">source_temp</span><span class="o">.</span><span class="n">to_legacy</span><span class="p">(),</span>
+         <span class="n">target_temp</span><span class="o">.</span><span class="n">to_legacy</span><span class="p">()],</span>
+        <span class="n">zoom</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">front</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.2458</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8088</span><span class="p">,</span> <span class="mf">0.5342</span><span class="p">],</span>
+        <span class="n">lookat</span><span class="o">=</span><span class="p">[</span><span class="mf">1.7745</span><span class="p">,</span> <span class="mf">2.2305</span><span class="p">,</span> <span class="mf">0.9787</span><span class="p">],</span>
+        <span class="n">up</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3109</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5878</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7468</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Load two point clouds and show initial pose&quot;</span><span class="p">)</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ColoredICP/frag_115.ply&quot;</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_point_cloud</span><span class="p">(</span><span class="s2">&quot;../../test_data/ColoredICP/frag_116.ply&quot;</span><span class="p">)</span>
+
+<span class="c1"># For Colored-ICP `colors` attribute must be of the same dtype as `positions` and `normals` attribute.</span>
+<span class="n">source</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+    <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Dtype</span><span class="o">.</span><span class="n">Float32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+<span class="n">target</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+    <span class="n">o3d</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Dtype</span><span class="o">.</span><span class="n">Float32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+
+<span class="c1"># draw initial alignment</span>
+<span class="n">current_transformation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">current_transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1. Load two point clouds and show initial pose
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_91_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_91_1.png" />
+</div>
+</div>
+<div class="section" id="Setting-baseline-with-point-to-plane-registration">
+<h2>Setting baseline with point-to-plane registration<a class="headerlink" href="#Setting-baseline-with-point-to-plane-registration" title="Permalink to this headline">¶</a></h2>
+<p>We first run Point-to-plane ICP as a baseline approach. The visualization below shows misaligned green triangle textures. This is because a geometric constraint does not prevent two planar surfaces from slipping.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">estimation</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">TransformationEstimationPointToPlane</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">max_correspondence_distance</span> <span class="o">=</span> <span class="mf">0.02</span>
+<span class="n">init_source_to_target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Apply Point-to-Plane ICP&quot;</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">reg_point_to_plane</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_correspondence_distance</span><span class="p">,</span>
+                              <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">)</span>
+
+<span class="n">icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by Point-To-Plane ICP: &quot;</span><span class="p">,</span> <span class="n">icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fitness: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_plane</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_plane</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">reg_point_to_plane</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Apply Point-to-Plane ICP
+Time taken by Point-To-Plane ICP:  0.398911714553833
+Fitness:  0.9746756777751884
+Inlier RMSE:  0.004219727450276841
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_95_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_95_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Colored-Registration">
+<h2>Colored Registration<a class="headerlink" href="#Colored-Registration" title="Permalink to this headline">¶</a></h2>
+<p>The core function for colored point cloud registration is <code class="docutils literal notranslate"><span class="pre">registration_colored_icp</span></code>. Following <a class="reference external" href="../reference.html#park2017">[Park2017]</a>, it runs ICP iterations (see <a class="reference internal" href="../pipelines/icp_registration.html#Point-to-point-ICP"><span class="std std-ref">Point-to-point ICP</span></a> for details) with a joint optimization objective</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E(\mathbf{T}) = (1-\delta)E_{C}(\mathbf{T}) + \delta E_{G}(\mathbf{T})
+\end{equation}</div><p>where <span class="math notranslate nohighlight">\(\mathbf{T}\)</span> is the transformation matrix to be estimated. <span class="math notranslate nohighlight">\(E_{C}\)</span> and <span class="math notranslate nohighlight">\(E_{G}\)</span> are the photometric and geometric terms, respectively. <span class="math notranslate nohighlight">\(\delta\in[0,1]\)</span> is a weight parameter that has been determined empirically.</p>
+<p>The geometric term <span class="math notranslate nohighlight">\(E_{G}\)</span> is the same as the <a class="reference internal" href="../pipelines/icp_registration.html#Point-to-plane-ICP"><span class="std std-ref">Point-to-plane ICP</span></a> objective</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E_{G}(\mathbf{T}) = \sum_{(\mathbf{p},\mathbf{q})\in\mathcal{K}}\big((\mathbf{p} - \mathbf{T}\mathbf{q})\cdot\mathbf{n}_{\mathbf{p}}\big)^{2},
+\end{equation}</div><p>where <span class="math notranslate nohighlight">\(\mathcal{K}\)</span> is the correspondence set in the current iteration. <span class="math notranslate nohighlight">\(\mathbf{n}_{\mathbf{p}}\)</span> is the normal of point <span class="math notranslate nohighlight">\(\mathbf{p}\)</span>.</p>
+<p>The color term <span class="math notranslate nohighlight">\(E_{C}\)</span> measures the difference between the color of point <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> (denoted as <span class="math notranslate nohighlight">\(C(\mathbf{q})\)</span>) and the color of its projection on the tangent plane of <span class="math notranslate nohighlight">\(\mathbf{p}\)</span>.</p>
+<div class="math notranslate nohighlight">
+\begin{equation}
+E_{C}(\mathbf{T}) = \sum_{(\mathbf{p},\mathbf{q})\in\mathcal{K}}\big(C_{\mathbf{p}}(\mathbf{f}(\mathbf{T}\mathbf{q})) - C(\mathbf{q})\big)^{2},
+\end{equation}</div><p>where <span class="math notranslate nohighlight">\(C_{\mathbf{p}}(\cdot)\)</span> is a precomputed function continuously defined on the tangent plane of <span class="math notranslate nohighlight">\(\mathbf{p}\)</span>. Function<span class="math notranslate nohighlight">\(\mathbf{f}(\cdot)\)</span> projects a 3D point to the tangent plane. For more details, refer to <a class="reference external" href="../reference.html#park2017">[Park2017]</a>.</p>
+<p>To further improve efficiency, <a class="reference external" href="../reference.html#park2017">[Park2017]</a> proposes a multi-scale registration scheme.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">estimation</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">TransformationEstimationForColoredICP</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">current_transformation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">criteria_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="n">relative_fitness</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+                                <span class="n">relative_rmse</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+                                <span class="n">max_iteration</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="mf">0.00001</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="n">treg</span><span class="o">.</span><span class="n">ICPConvergenceCriteria</span><span class="p">(</span><span class="mf">0.000001</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">max_correspondence_distances</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">utility</span><span class="o">.</span><span class="n">DoubleVector</span><span class="p">([</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">])</span>
+
+<span class="n">voxel_sizes</span> <span class="o">=</span> <span class="n">o3d</span><span class="o">.</span><span class="n">utility</span><span class="o">.</span><span class="n">DoubleVector</span><span class="p">([</span><span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># colored pointcloud registration</span>
+<span class="c1"># This is implementation of following paper</span>
+<span class="c1"># J. Park, Q.-Y. Zhou, V. Koltun,</span>
+<span class="c1"># Colored Point Cloud Registration Revisited, ICCV 2017</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Colored point cloud registration&quot;</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">reg_multiscale_icp</span> <span class="o">=</span> <span class="n">treg</span><span class="o">.</span><span class="n">multi_scale_icp</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">voxel_sizes</span><span class="p">,</span>
+                                          <span class="n">criteria_list</span><span class="p">,</span>
+                                          <span class="n">max_correspondence_distances</span><span class="p">,</span>
+                                          <span class="n">init_source_to_target</span><span class="p">,</span> <span class="n">estimation</span><span class="p">)</span>
+
+<span class="n">icp_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken by Colored ICP: &quot;</span><span class="p">,</span> <span class="n">icp_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fitness: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_plane</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inlier RMSE: &quot;</span><span class="p">,</span> <span class="n">reg_point_to_plane</span><span class="o">.</span><span class="n">inlier_rmse</span><span class="p">)</span>
+
+<span class="n">draw_registration_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">reg_multiscale_icp</span><span class="o">.</span><span class="n">transformation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Colored point cloud registration
+Time taken by Colored ICP:  0.16246438026428223
+Fitness:  0.9746756777751884
+Inlier RMSE:  0.004219727450276841
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorial_t_pipelines_t_icp_registration_99_1.png" src="../../_images/tutorial_t_pipelines_t_icp_registration_99_1.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="t_robust_kernel.html" class="btn btn-neutral float-right" title="Robust Kernel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Pipelines (Tensor)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018 - 2021, www.open3d.org
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+<span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Docs version</span>
+    latest (dd646a2)
+    <span class="fa fa-caret-down"></span>
+</span>
+
+<!-- A hack to include an external page to get around CORS policy -->
+<!-- https://stackoverflow.com/a/15250208/1255535 -->
+<div class="rst-other-versions">
+    <dl>
+    <dt>Versions</dt>
+        <dd><ul>
+            <script src="http://www.open3d.org/docs/versions.js"></script>
+        </ul></dd>
+    </dl>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
