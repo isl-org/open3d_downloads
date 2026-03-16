@@ -2,7 +2,7 @@
 
 Hosting Open3D test data for development use.
 
-## (TL;DR) How to add a data file
+## How to add a data file
 
 - Small files (e.g. several MB)
     - Step 1: Push the file to the `open3d_downloads` repo.
